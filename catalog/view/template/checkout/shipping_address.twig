@@ -77,6 +77,12 @@
           <div id="error-shipping-zone" class="invalid-feedback"></div>
         </div>
         
+        <!-- <div class="col mb-3 required">
+          <label for="input-shipping-full_address" class="form-label">full address</label>
+          <input type="text" name="full_address" value="{{ full_address }}" placeholder="full address" id="input-shipping-full_address" class="form-control"/>
+          <div id="error-shipping-full_address" class="invalid-feedback"></div>
+        </div> -->
+
         {% for custom_field in custom_fields %}
 
           {% if custom_field.type == 'select' %}

@@ -90,11 +90,14 @@ class ShippingAddress extends \Opencart\System\Engine\Controller {
 			'postcode'     => '',
 			'country_id'   => 0,
 			'zone_id'      => 0,
-			'custom_field' => []
+			'custom_field' => [],
+			// 'full_address' => ''
 		];
 
 		$post_info = $this->request->post + $required;
-
+		
+		// var_dump($post_info);
+		// return 1;
 		// Validate cart has products and has stock.
 		if (!$this->cart->hasProducts() || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout')) || !$this->cart->hasMinimum()) {
 			$json['redirect'] = $this->url->link('checkout/cart', 'language=' . $this->config->get('config_language'), true);
