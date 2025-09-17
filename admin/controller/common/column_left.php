@@ -654,6 +654,24 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 					'children' => []
 				];
 			}
+			
+			//===================================================================================================
+			if ($this->user->hasPermission('access', 'localisation/city')) {
+				$localisation[] = [
+					'name'     => $this->language->get('text_city'),
+					'href'     => $this->url->link('localisation/city', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+			//===================================================================================================
+			// if ($this->user->hasPermission('access', 'localisation/district')) {
+				$localisation[] = [
+					'name'     => $this->language->get('text_district'),
+					'href'     => $this->url->link('localisation/district', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			// }
+			//===================================================================================================
 
 			if ($this->user->hasPermission('access', 'localisation/geo_zone')) {
 				$localisation[] = [

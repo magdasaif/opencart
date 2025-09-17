@@ -427,4 +427,11 @@ class Zone extends \Opencart\System\Engine\Model {
 
 		return (int)$query->row['total'];
 	}
+
+	//==========================================================================
+	public function getCountryIdRelatedWithZone(int $zone_id): int {
+		$query = $this->db->query("SELECT `country_id` FROM `" . DB_PREFIX . "zone` WHERE `zone_id` = '" . (int)$zone_id . "'");
+
+		return (int)$query->row['country_id'];
+	}
 }

@@ -500,6 +500,7 @@ class Country extends \Opencart\System\Engine\Controller {
 	 * @return void
 	 */
 	public function country(): void {
+		// return ['mes'=>'inside country fun line 503'];
 		$json = [];
 
 		if (isset($this->request->get['country_id'])) {

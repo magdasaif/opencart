@@ -1,0 +1,137 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <button type="submit" form="form-city" formaction="{{ save }}" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
+        <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
+      <div class="card-body">
+        <form id="form-city" action="{{ save }}" method="post" data-oc-toggle="ajax">
+          <div class="row mb-3 required">
+            <label class="col-sm-2 col-form-label">{{ entry_name }}</label>
+            <div class="col-sm-10">
+              {% for language in languages %}
+                <div class="input-group">
+                  <div class="input-group-text"><img src="{{ language.image }}" title="{{ language.name }}"/></div>
+                  <input type="text" name="city_description[{{ language.language_id }}][name]" value="{{ city_description[language.language_id] ? city_description[language.language_id].name }}" placeholder="{{ entry_name }}" id="input-name-{{ language.language_id }}" class="form-control"/>
+                </div>
+                <div id="error-name-{{ language.language_id }}" class="invalid-feedback"></div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="input-code" class="col-sm-2 col-form-label">{{ entry_code }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="code" value="{{ code }}" placeholder="{{ entry_code }}" id="input-code" class="form-control"/>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="input-country" class="col-sm-2 col-form-label">{{ entry_country }}</label>
+            <div class="col-sm-10">
+              <select name="country_id" id="input-country" class="form-select">
+                {% for country in countries %}
+                  <option value="{{ country.country_id }}"{% if country.country_id == country_id %} selected{% endif %}>{{ country.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="input-zone" class="col-sm-2 col-form-label">{{ entry_zone }}</label>
+            <div class="col-sm-10">
+              <select name="zone_id" id="input-zone" class="form-select">
+                {% for zone in zones %}
+                  <option value="{{ zone.zone_id }}"{% if zone.zone_id == zone_id %} selected{% endif %}>{{ zone.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <div class="form-check form-switch form-switch-lg">
+                <input type="hidden" name="status" value="0"/>
+                <input type="checkbox" name="status" value="1" id="input-status" class="form-check-input"{% if status %} checked{% endif %}/>
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" name="city_id" value="{{ city_id }}" id="input-city-id"/>
+          <input type="hidden" name="user_token" value="{{ user_token }}" id="input-user-token"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // alert('line 83');
+      const countrySelect = document.getElementById('input-country');
+      const zoneSelect = document.getElementById('input-zone');
+      const user_token = document.getElementById('input-user-token').value;
+
+      // Function to fetch zones
+      function fetchZones(country_id, selected_zone_id = 0) {
+        console.log('inside fetchZones function');
+        console.log(country_id);
+        console.log(selected_zone_id);
+        console.log(user_token);
+
+        fetch('index.php?route=localisation/country.country&user_token=' + user_token + '&country_id=' + country_id)
+        // fetch('index.php?route=localisation/city/getZonesByCountry&user_token=' + user_token + '&country_id=' + country_id)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          
+            // Clear existing options
+            zoneSelect.innerHTML = '';
+
+            if (data.length === 0) {
+                zoneSelect.innerHTML = '<option value="0">-- {{ text_no_zones }} --</option>';
+            } else {
+                data.zone.forEach(zone => {
+                    const option = document.createElement('option');
+                    option.value = zone.zone_id;
+                    option.textContent = zone.name;
+                    if (zone.zone_id == selected_zone_id) {
+                        option.selected = true;
+                    }
+                    zoneSelect.appendChild(option);
+                });
+            }
+          }
+        ).catch(error => console.error('Error fetching zones:', error));
+      }
+
+      // On page load, fetch zones for selected or first country
+      if (countrySelect.value) {
+        // alert('load page')
+        // alert(countrySelect.value);
+        fetchZones(countrySelect.value, {{ zone_id|default(0) }});
+      }
+
+      // On country change
+      countrySelect.addEventListener('change', function () {
+        // alert('change in country')
+        // alert(this.value);
+        fetchZones(this.value);
+      });
+  });
+</script>
+
+{{ footer }}
